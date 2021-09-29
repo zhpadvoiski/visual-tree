@@ -4,6 +4,8 @@ let NODES = [
   40, 20, 80, 24, 53, 12, 65, 23, 45, 64, 21, 94, 82, 35, 72, 8, 7, 15, 37, 27,
   43, 56, 68, 34,
 ];
+const xPos = Math.floor(window.innerWidth / 2);
+const yPos = 25;
 
 function generateNodes(nodes) {
   const genNodes = nodes.map((node) => {
@@ -22,7 +24,7 @@ function generateNode(node) {
     id: uuidv4(),
     type: "input",
     data: { label: node.toString() },
-    position: { x: 250, y: 25 },
+    position: { x: xPos, y: yPos },
   };
 }
 
