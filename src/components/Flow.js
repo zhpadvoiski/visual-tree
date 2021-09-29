@@ -1,5 +1,5 @@
 import ReactFlow, { Background } from "react-flow-renderer";
-import { getNodes } from "../utils/flowSetup";
+import getNodes from "../utils/flowSetup";
 import { useEffect, useState } from "react";
 
 // const elements = [
@@ -33,7 +33,6 @@ const FlowWithBackground = () => {
   useEffect(() => {
     setNodes(getNodes());
   }, []);
-  //   debugger;
   return nodes ? (
     <ReactFlow elements={nodes}>
       <Background variant="dots" gap={14} size={0.5} />
