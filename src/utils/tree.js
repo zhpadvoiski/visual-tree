@@ -40,11 +40,11 @@ export default class Tree {
   }
 }
 
-function NewNode(value) {
+export function NewNode(value) {
   this.value = value === undefined ? "no value" : value;
   this.children = [];
 }
-class NewTree {
+export class NewTree {
   constructor() {
     this.root = null;
   }
