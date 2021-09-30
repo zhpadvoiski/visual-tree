@@ -56,9 +56,12 @@ export class NewTree {
       return;
     }
 
+    search(node);
+
     function search(node) {
       if (value < node.value) {
         if (!node.children[0]) {
+          debugger;
           node.children[0] = new NewNode(value);
           return;
         } else {
