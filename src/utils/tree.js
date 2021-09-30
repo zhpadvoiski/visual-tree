@@ -39,3 +39,41 @@ export default class Tree {
     }
   }
 }
+
+function NewNode(value) {
+  this.value = value === undefined ? "no value" : value;
+  this.children = [];
+}
+class NewTree {
+  constructor() {
+    this.root = null;
+  }
+
+  add(value) {
+    let node = this.root;
+    if (!node) {
+      this.root = new NewNode(value);
+      return;
+    }
+
+    function search(node) {
+      if (value < node.value) {
+        if (!node.children[0]) {
+          node.children[0] = new NewNode(value);
+          return;
+        } else {
+          return search(node.children[0]);
+        }
+      }
+      if (value > node.value) {
+        if (!node.children[1]) {
+          node.children[1] = new NewNode(value);
+          return;
+        } else {
+          return search(node.children[1]);
+        }
+      }
+      return;
+    }
+  }
+}
