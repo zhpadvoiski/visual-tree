@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import Tree from "./tree";
+import Tree, { TreeRenderer, NewTree } from "./tree";
 
 let tree = new Tree();
 let NODES = [
@@ -20,15 +20,15 @@ function generateFlowNodes(tree) {
   const nodes = [];
   const root = tree.root;
   let level = 1;
-  traverse(root, posX, posY, level);
+  traverse(root, level);
   return nodes;
 
-  function traverse(node, posX, posY, level) {
+  function traverse(node, level) {
     if (!node) return;
 
-    traverse(node.left, posX - fixPos / 2 ** level, posY + fixPos, level + 1);
-    nodes.push(generateNode(node, posX, posY));
-    traverse(node.right, posX + fixPos / 2 ** level, posY + fixPos, level + 1);
+    traverse(node.left, level + 1);
+    nodes.push(generateNode(node, level));
+    traverse(node.right, level + 1);
   }
 }
 
@@ -39,7 +39,10 @@ function generateNodes(nodes) {
   return genNodes;
 }
 
-function generateNode(node, x, y) {
+function generateNode(node, level) {
+  const { value } = node;
+  const y = level * 40;
+  const x = 2 ** level * 10;
   return {
     id: uuidv4(),
     type: "input",
@@ -51,5 +54,7 @@ function generateNode(node, x, y) {
 export default function getNodes() {
   debugger;
   initTree(NODES);
-  return generateFlowNodes(tree);
+  //   const renderTree = new TreeRenderer(tree.root);
+  const nodes = generateFlowNodes(tree);
+  return nodes;
 }

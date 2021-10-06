@@ -47,44 +47,45 @@ export function TreeNode(value) {
   this.prevSibling = null;
   this.children = [];
 }
-// export class NewTree {
-//   constructor() {
-//     this.root = null;
-//   }
 
-//   add(value) {
-//     let node = this.root;
-//     if (!node) {
-//       this.root = new NewTree(value);
-//       return;
-//     }
+export class NewTree {
+  constructor() {
+    this.root = null;
+  }
 
-//     search(node);
+  add(value) {
+    let node = this.root;
+    if (!node) {
+      this.root = new TreeNode(value);
+      return;
+    }
 
-//     function search(node) {
-//       if (value < node.value) {
-//         if (!node.children[0]) {
-//           debugger;
-//           node.children[0] = new NewTree(value);
-//           return;
-//         } else {
-//           return search(node.children[0]);
-//         }
-//       }
-//       if (value > node.value) {
-//         if (!node.children[1]) {
-//           node.children[1] = new NewTree(value);
-//           return;
-//         } else {
-//           return search(node.children[1]);
-//         }
-//       }
-//       return;
-//     }
-//   }
-// }
-const NODE_STEP = 70;
-class TreeRenderer {
+    search(node);
+
+    function search(node) {
+      if (value < node.value) {
+        if (!node.children[0]) {
+          node.children[0] = new TreeNode(value);
+          return;
+        } else {
+          return search(node.children[0]);
+        }
+      }
+      if (value > node.value) {
+        if (!node.children[1]) {
+          node.children[1] = new TreeNode(value);
+          return;
+        } else {
+          return search(node.children[1]);
+        }
+      }
+      return;
+    }
+  }
+}
+
+const NODE_STEP = 400;
+export class TreeRenderer {
   constructor(
     dataRoot,
     width = window.innerWidth,
@@ -95,25 +96,42 @@ class TreeRenderer {
     this.width = width;
     this.height = height;
     this.renderRoot = this.prepareData(this.dataRoot, 0, null);
+    this.firstPass(this.renderRoot);
+    this.deep = this.getDeep();
   }
 
   /*
    * Build an intermediate form of the original data tree.  The nodes of
    * this new tree will be instances of the TreeNode class.
    */
+  getDeep() {
+    let deep = -Infinity;
+
+    helper(this.renderRoot, 0);
+    return deep;
+
+    function helper(node, level) {
+      deep = Math.max(deep, level);
+      for (let i = 0; i < node.children.length; i++) {
+        helper(node.children[i], level + 1);
+      }
+    }
+  }
   prepareData(node, level, prevSibling) {
     let treeNode = new TreeNode(node.value);
-    treeNode.x = level;
+    treeNode.y = level;
     treeNode.prevSibling = prevSibling;
 
     for (let i = 0; i < node.children.length; i++) {
-      treeNode.children.push(
-        this.prepareData(
-          node.children[i],
-          level + 1,
-          i >= 1 ? treeNode.children[i - 1] : null
-        )
-      );
+      if (node.children[i]) {
+        treeNode.children.push(
+          this.prepareData(
+            node.children[i],
+            level + 200,
+            i >= 1 ? treeNode.children[i - 1] : null
+          )
+        );
+      }
     }
     return treeNode;
   }
@@ -123,18 +141,25 @@ class TreeRenderer {
       this.firstPass(node.children[i]);
     }
 
-    node.y = node.prevSibling ? node.prevSibling.y + NODE_STEP : 0;
+    node.x = node.prevSibling ? node.prevSibling.x + NODE_STEP : 0;
 
     if (node.children.length === 1) {
-      node.modifier = node.y;
+      node.modifier = node.x;
     } else if (node.children.length >= 2) {
       let minX = Infinity;
       let maxX = -minX;
       for (let i = 0; i < node.children.length; i++) {
-        minX = Math.min(node.children[i], minX);
-        maxX = Math.max(node.children[i], maxX);
+        minX = Math.min(node.children[i].x, minX);
+        maxX = Math.max(node.children[i].x, maxX);
       }
-      node.modifier = node.y - (maxX - minX) / 2;
+      node.modifier = node.x - (maxX - minX) / 2;
+    }
+  }
+
+  secondPass(node, modSum) {
+    node.final = node.x + modSum;
+    for (let i = 0; i < node.children.length; i++) {
+      this.secondPass(node.children[i], node.modifier + modSum);
     }
   }
 }
