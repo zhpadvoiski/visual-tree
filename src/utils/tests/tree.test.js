@@ -1,4 +1,4 @@
-import { NewNode, NewTree } from "../tree";
+import { NewTree, NewNode } from "../tree";
 
 describe("node", () => {
   describe("NewNode class", () => {

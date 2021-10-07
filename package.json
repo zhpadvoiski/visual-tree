@@ -24,7 +24,7 @@
       "react-app",
       "react-app/jest"
     ],
-    "plugins": ["classPrivateProperties", "classPrivateMethods"]
+    "plugins": ["classPrivateMethods"]
   },
   "browserslist": {
     "production": [
