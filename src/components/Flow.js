@@ -28,16 +28,16 @@ import { useEffect, useState } from "react";
 // ];
 
 const FlowWithBackground = () => {
-  const [nodes, setNodes] = useState();
+	const [nodes, setNodes] = useState();
 
-  useEffect(() => {
-    setNodes(getNodes());
-  }, []);
-  return nodes ? (
-    <ReactFlow elements={nodes}>
-      <Background variant="dots" gap={14} size={0.5} />
-    </ReactFlow>
-  ) : null;
+	useEffect(() => {
+		//setNodes(getNodes());
+	}, []);
+	return nodes ? (
+		<ReactFlow elements={nodes}>
+			<Background variant="dots" gap={14} size={0.5} />
+		</ReactFlow>
+	) : null;
 };
 
 export default FlowWithBackground;

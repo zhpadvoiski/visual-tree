@@ -40,20 +40,23 @@ export default class Tree {
 	}
 }
 
-export function PropsNode(value) {
+export function PropsNode(value, parent) {
 	this.value = value === undefined ? "no value" : value;
 	this.x = 0;
 	this.y = 0;
-	this.prevSibling = null;
+	this.gap = 0;
 	this.left = null;
 	this.right = null;
 	this.level = 0;
+	this.parent = parent === undefined ? null : parent;
 }
 
 export class NewTree {
 	constructor() {
 		this.root = null;
 		this.depth = 0;
+
+		this.assingLevel = this.assingLevel.bind(this);
 	}
 
 	add(value) {
@@ -68,7 +71,7 @@ export class NewTree {
 		function search(node) {
 			if (value < node.value) {
 				if (!node.left) {
-					node.left = new PropsNode(value);
+					node.left = new PropsNode(value, node);
 					return;
 				} else {
 					return search(node.left);
@@ -76,7 +79,7 @@ export class NewTree {
 			}
 			if (value > node.value) {
 				if (!node.right) {
-					node.right = new PropsNode(value);
+					node.right = new PropsNode(value, node);
 					return;
 				} else {
 					return search(node.right);
@@ -84,11 +87,76 @@ export class NewTree {
 			}
 			return;
 		}
+		//	this.assignLevels();
+	}
+
+	traverse(callback) {
+		let node = this.root;
+		helper(node, 1);
+
+		function helper(node, level) {
+			if (!node) return;
+			helper(node.left, level + 1);
+			helper(node.right, level + 1);
+			if (callback) {
+				callback(node, level);
+			}
+		}
+	}
+	assingLevel(node, level) {
+		node.level = level;
+		this.depth = Math.max(this.depth, level);
+	}
+	assignLevels() {
+		this.traverse(this.assingLevel);
 	}
 }
 
 export class TreeRenderer {
-	constructor() {}
+	constructor(dataTree, width, height, base = 40) {
+		this.dataTree = dataTree;
+		this.width = width;
+		this.height = height;
+		this.baseX = base;
+		this.baseY = 200;
+		this.init();
+		this.assignXPos();
+	}
+
+	init() {
+		let node = this.dataTree.root;
+		const ctx = this;
+		traverse(node);
+		function traverse(node) {
+			if (!node) return;
+			traverse(node.left);
+			traverse(node.right);
+			node.y = node.level * ctx.baseY;
+			if (node.parent) {
+				node.parent.gap =
+					(ctx.dataTree.depth - node.level + 1) * ctx.baseX;
+			}
+		}
+	}
+
+	assignXPos() {
+		let node = this.dataTree.root;
+
+		traverse(node, 400);
+
+		function traverse(node, x) {
+			if (!node) return;
+			let { gap } = node;
+			if (node.left) {
+				node.left.x = x - gap / 2;
+			}
+			if (node.right) {
+				node.right.x = x + gap / 2;
+			}
+			traverse(node.left, x - gap / 2);
+			traverse(node.right, x + gap / 2);
+		}
+	}
 }
 
 const NODE_STEP = 400;
