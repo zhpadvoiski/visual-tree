@@ -113,7 +113,7 @@ export class NewTree {
 }
 
 export class TreeRenderer {
-	constructor(dataTree, width, height, base = 40) {
+	constructor(dataTree, width, height, base = 60) {
 		this.dataTree = dataTree;
 		this.width = width;
 		this.height = height;
@@ -134,13 +134,18 @@ export class TreeRenderer {
 			node.y = node.level * ctx.baseY;
 			if (node.parent) {
 				node.parent.gap =
-					(ctx.dataTree.depth - node.level + 1) * ctx.baseX;
+					(ctx.dataTree.depth - node.level + 4) * ctx.baseX;
 			}
 		}
 	}
 
+	getRenderTree() {
+		return this.dataTree;
+	}
+
 	assignXPos() {
 		let node = this.dataTree.root;
+		node.x = 400;
 
 		traverse(node, 400);
 

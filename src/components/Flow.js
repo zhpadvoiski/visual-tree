@@ -31,7 +31,7 @@ const FlowWithBackground = () => {
 	const [nodes, setNodes] = useState();
 
 	useEffect(() => {
-		//setNodes(getNodes());
+		setNodes(getNodes());
 	}, []);
 	return nodes ? (
 		<ReactFlow elements={nodes}>

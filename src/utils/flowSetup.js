@@ -39,17 +39,15 @@ let NODES = [
 //   return genNodes;
 // }
 
-// function generateNode(node, level) {
-//   const { value } = node;
-//   const y = level * 40;
-//   const x = 2 ** level * 10;
-//   return {
-//     id: uuidv4(),
-//     type: "input",
-//     data: { label: node.value },
-//     position: { x, y },
-//   };
-// }
+function generateNode(node) {
+	const { value, x, y } = node;
+	return {
+		id: uuidv4(),
+		type: "input",
+		data: { label: value },
+		position: { x, y },
+	};
+}
 
 // export default function getNodes() {
 //   debugger;
@@ -58,11 +56,26 @@ let NODES = [
 //   const nodes = generateFlowNodes(tree);
 //   return nodes;
 // }
+function generateRenderData(tree) {
+	let node = tree.root;
+	let nodes = [];
 
-let tree = new NewTree();
-NODES.forEach((node) => tree.add(node));
-tree.assignLevels();
-let renderTree = new TreeRenderer(tree, 1000, 1000);
-let nodes = generateRenderData(renderTree.getRenderTree());
+	traverse(node);
 
-debugger;
+	return nodes;
+	function traverse(node) {
+		if (!node) return;
+
+		traverse(node.left);
+		traverse(node.right);
+		nodes.push(generateNode(node));
+	}
+}
+export default function getNodes() {
+	let tree = new NewTree();
+	NODES.forEach((node) => tree.add(node));
+	tree.assignLevels();
+	let renderTree = new TreeRenderer(tree, 1000, 1000);
+	let nodes = generateRenderData(renderTree.getRenderTree());
+	return nodes;
+}
